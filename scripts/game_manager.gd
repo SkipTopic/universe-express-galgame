@@ -20,14 +20,28 @@ const CHAPTER_TITLES := {
 ## 当前阅读进度（存档内容就是这三个变量）
 var current_chapter: int = 1
 var current_line: int = 0
-## 玩家在【选择】处做出的选择，按出现顺序记录（1基，供后续分支扩展用）
+## 玩家在【选择】处做出的选择，按出现顺序记录（1基）
 var choice_history: Array[int] = []
+## 已读进度：章节号 → 该章已读到的最大行号（供"快进"和"跳过已读"判断）
+var read_progress: Dictionary = {}
 ## 存档界面打开模式："save"=保存，"load"=读取
 var open_save_mode: String = "load"
 
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+
+
+## ── 已读记录 ──
+## 标记某章的第 line 行已读过
+func mark_read(ch: int, line: int) -> void:
+	if line > int(read_progress.get(ch, 0)):
+		read_progress[ch] = line
+
+
+## 某章第 line 行是否已读过
+func is_read(ch: int, line: int) -> bool:
+	return line <= int(read_progress.get(ch, 0))
 
 
 ## 章节标题查询
@@ -45,6 +59,7 @@ func save_slot(slot: int) -> bool:
 		"line": current_line,
 		"title": chapter_title(current_chapter),
 		"choices": choice_history,
+		"read": read_progress,
 		"timestamp": Time.get_datetime_string_from_system(false, true),
 	}
 	var f := FileAccess.open(SAVE_DIR + "slot_%d.json" % slot, FileAccess.WRITE)
@@ -95,6 +110,7 @@ func apply_slot(slot: int) -> bool:
 	current_chapter = int(d.get("chapter", 1))
 	current_line = int(d.get("line", 0))
 	choice_history = _to_int_array(d.get("choices", []))
+	read_progress = _to_int_dict(d.get("read", {}))
 	return true
 
 
@@ -103,6 +119,15 @@ func _to_int_array(src: Variant) -> Array[int]:
 	if src is Array:
 		for v in src:
 			out.append(int(v))
+	return out
+
+
+## JSON 的 key 一定是字符串，读回来要还原成 int 键
+func _to_int_dict(src: Variant) -> Dictionary:
+	var out: Dictionary = {}
+	if src is Dictionary:
+		for k in src:
+			out[int(k)] = int(src[k])
 	return out
 
 

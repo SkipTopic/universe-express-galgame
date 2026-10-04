@@ -13,7 +13,7 @@ config_version=5
 config/name="宇宙快递员"
 config/version="0.1.0"
 run/main_scene="res://scenes/main.tscn"
-config/features=PackedStringArray("4.3", "GL Compatibility")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [audio]
@@ -23,6 +23,8 @@ buses/default_bus_layout="res://default_bus_layout.tres"
 [autoload]
 
 GameManager="*res://scripts/game_manager.gd"
+Settings="*res://scripts/settings.gd"
+AudioManager="*res://scripts/audio_manager.gd"
 
 [display]
 
@@ -37,3 +39,9 @@ window/handheld/orientation=4
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
+
+[gui]
+
+# 全局默认字体。Godot 自带字体不含中文字形，导出到 Android 后中文会变成方块，
+# 这里统一指定为 assets/fonts 下的中文字体。
+theme/custom_font="res://assets/fonts/simhei.ttf"

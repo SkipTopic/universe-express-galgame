@@ -278,3 +278,214 @@ offset_bottom = -14.0
 theme_override_colors/font_color = Color(0.85, 0.66, 0.42, 1)
 theme_override_font_sizes/font_size = 30
 text = "▼"
+
+[node name="CtrlBar" type="HBoxContainer" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -620.0
+offset_top = -424.0
+offset_right = -40.0
+offset_bottom = -348.0
+theme_override_constants/separation = 16
+
+[node name="AutoBtn" type="Button" parent="UILayer/CtrlBar"]
+custom_minimum_size = Vector2(132, 68)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
+theme_override_font_sizes/font_size = 24
+text = "▶ 自动"
+
+[node name="SkipBtn" type="Button" parent="UILayer/CtrlBar"]
+custom_minimum_size = Vector2(132, 68)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
+theme_override_font_sizes/font_size = 24
+text = "▶▶ 快进"
+
+[node name="HistoryBtn" type="Button" parent="UILayer/CtrlBar"]
+custom_minimum_size = Vector2(132, 68)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
+theme_override_font_sizes/font_size = 24
+text = "≡ 历史"
+
+[node name="SettingsBtn" type="Button" parent="UILayer/CtrlBar"]
+custom_minimum_size = Vector2(132, 68)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
+theme_override_font_sizes/font_size = 24
+text = "⚙ 设置"
+
+[node name="HistoryPanel" type="Panel" parent="UILayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = 80.0
+offset_right = -80.0
+offset_bottom = -80.0
+theme_override_styles/panel = SubResource("Style_vnbox")
+
+[node name="HistoryText" type="RichTextLabel" parent="UILayer/HistoryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 26.0
+offset_right = -40.0
+offset_bottom = -120.0
+theme_override_colors/default_color = Color(0.94, 0.92, 0.87, 1)
+theme_override_font_sizes/normal_font_size = 26
+bbcode_enabled = true
+selection_enabled = true
+scroll_active = true
+
+[node name="HistoryClose" type="Button" parent="UILayer/HistoryPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -100.0
+offset_right = -40.0
+offset_bottom = -30.0
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_font_sizes/font_size = 26
+text = "返回"
+
+[node name="SettingsPanel" type="Panel" parent="UILayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -440.0
+offset_top = -280.0
+offset_right = 440.0
+offset_bottom = 280.0
+theme_override_styles/panel = SubResource("Style_vnbox")
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = 34.0
+offset_right = -44.0
+offset_bottom = -34.0
+theme_override_constants/separation = 24
+
+[node name="RowSpeed" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SpeedLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowSpeed"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_font_sizes/font_size = 24
+text = "文字速度"
+vertical_alignment = 1
+
+[node name="SpeedSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowSpeed"]
+custom_minimum_size = Vector2(520, 40)
+layout_mode = 2
+min_value = 10.0
+max_value = 120.0
+step = 5.0
+value = 45.0
+
+[node name="RowAuto" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="AutoLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowAuto"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_font_sizes/font_size = 24
+text = "自动停留(秒)"
+vertical_alignment = 1
+
+[node name="AutoSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowAuto"]
+custom_minimum_size = Vector2(520, 40)
+layout_mode = 2
+min_value = 0.5
+max_value = 5.0
+step = 0.1
+value = 1.8
+
+[node name="RowBgm" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="BgmLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowBgm"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_font_sizes/font_size = 24
+text = "音乐音量"
+vertical_alignment = 1
+
+[node name="BgmSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowBgm"]
+custom_minimum_size = Vector2(520, 40)
+layout_mode = 2
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+value = 0.6
+
+[node name="RowSfx" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SfxLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowSfx"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_font_sizes/font_size = 24
+text = "音效音量"
+vertical_alignment = 1
+
+[node name="SfxSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowSfx"]
+custom_minimum_size = Vector2(520, 40)
+layout_mode = 2
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="Buttons" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="SettingsReset" type="Button" parent="UILayer/SettingsPanel/VBox/Buttons"]
+custom_minimum_size = Vector2(260, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_font_sizes/font_size = 24
+text = "恢复默认"
+
+[node name="SettingsClose" type="Button" parent="UILayer/SettingsPanel/VBox/Buttons"]
+custom_minimum_size = Vector2(260, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
+theme_override_font_sizes/font_size = 24
+text = "关闭"

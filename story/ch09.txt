@@ -1,4 +1,5 @@
 【章节】第9章 B65楼
+【音乐】bgm_ch09
 【背景】bg_corridor_b65
 查理把箱子打开，晓琳从里面探出头来。
 【立绘】char_xiaolin
