@@ -149,16 +149,24 @@ func _goto_main() -> void:
 
 
 ## 转场演出：黑场渐入0.35s → 清立绘和CG → 渐出0.35s
+## _fading 防重入：黑场期间再点击不会叠加多个转场协程（否则会连环跳句/死等）
+var _fading := false
+
 func _do_fade() -> void:
-	var tr := create_tween()
-	tr.tween_property(fade_rect, "modulate:a", 1.0, 0.35)
-	await tr.finished
+	if _fading:
+		return
+	_fading = true
 	char_l.visible = false
 	char_r.visible = false
 	cg_rect.visible = false
-	var tr2 := create_tween()
-	tr2.tween_property(fade_rect, "modulate:a", 0.0, 0.35)
-	await tr2.finished
+	if fade_rect != null and is_instance_valid(fade_rect):
+		var tr := create_tween()
+		tr.tween_property(fade_rect, "modulate:a", 1.0, 0.35)
+		await tr.finished
+		var tr2 := create_tween()
+		tr2.tween_property(fade_rect, "modulate:a", 0.0, 0.35)
+		await tr2.finished
+	_fading = false
 
 
 ## ── 推进：自动步骤连续执行，遇到对话 / 选项 / CG 停下等玩家 ──
@@ -333,7 +341,7 @@ func _skip_step() -> void:
 
 ## ── 输入：点击 / 触屏 / 回车推进 ──
 func _unhandled_input(event: InputEvent) -> void:
-	if settings_panel.visible or history_panel.visible:
+	if settings_panel.visible or history_panel.visible or _fading:
 		return
 	if awaiting_choice or not _is_confirm(event):
 		return
