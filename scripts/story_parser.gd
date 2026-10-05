@@ -35,6 +35,8 @@ static func parse(path: String) -> Array[Dictionary]:
 			steps.append({"type": "sprite", "value": s.trim_prefix("【立绘】")})
 		elif s.begins_with("【插图】"):
 			steps.append({"type": "cg", "value": s.trim_prefix("【插图】")})
+		elif s.begins_with("【转场】"):
+			steps.append({"type": "fade", "value": s.trim_prefix("【转场】")})
 		elif s.begins_with("【音乐】"):
 			steps.append({"type": "bgm", "value": s.trim_prefix("【音乐】")})
 		elif s.begins_with("【音效】"):

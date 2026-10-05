@@ -41,6 +41,7 @@ var _options: Array[Dictionary] = []
 @onready var text_label: RichTextLabel = $UILayer/VNBox/Text
 @onready var next_arrow: Label = $UILayer/VNBox/NextArrow
 @onready var choices: VBoxContainer = $UILayer/Choices
+@onready var fade_rect: ColorRect = $FadeRect
 
 @onready var auto_btn: Button = $UILayer/CtrlBar/AutoBtn
 @onready var skip_btn: Button = $UILayer/CtrlBar/SkipBtn
@@ -147,6 +148,19 @@ func _goto_main() -> void:
 	get_tree().change_scene_to_file("res://scenes/main.tscn")
 
 
+## 转场演出：黑场渐入0.35s → 清立绘和CG → 渐出0.35s
+func _do_fade() -> void:
+	var tr := create_tween()
+	tr.tween_property(fade_rect, "modulate:a", 1.0, 0.35)
+	await tr.finished
+	char_l.visible = false
+	char_r.visible = false
+	cg_rect.visible = false
+	var tr2 := create_tween()
+	tr2.tween_property(fade_rect, "modulate:a", 0.0, 0.35)
+	await tr2.finished
+
+
 ## ── 推进：自动步骤连续执行，遇到对话 / 选项 / CG 停下等玩家 ──
 func _advance() -> void:
 	var jump_guard := 0
@@ -164,6 +178,9 @@ func _advance() -> void:
 				if _apply_cg(String(st.get("value", ""))):
 					idx += 1
 					return
+			"fade":
+				# 转场：黑场渐入 → 清空立绘/CG → 渐出
+				await _do_fade()
 			"bgm":
 				AudioManager.play_bgm(String(st.get("value", "")))
 			"sfx":
