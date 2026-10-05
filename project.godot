@@ -10,6 +10,8 @@ config_version=5
 
 [application]
 
+run/max_fps=60
+
 config/name="宇宙快递员"
 config/version="0.1.0"
 run/main_scene="res://scenes/main.tscn"
@@ -34,14 +36,13 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="keep"
 window/handheld/orientation=4
 
+
+[gui]
+
+theme/custom_font="res://assets/fonts/NotoSerifSC-Regular.otf"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
-
-[gui]
-
-# 全局默认字体。Godot 自带字体不含中文字形，导出到 Android 后中文会变成方块，
-# 这里统一指定为 assets/fonts 下的中文字体。
-theme/custom_font="res://assets/fonts/NotoSerifSC-Regular.otf"

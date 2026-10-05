@@ -1,36 +1,24 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://cjfjorpehwlwg"]
 
-[ext_resource type="Script" path="res://scripts/game.gd" id="1_game"]
-[ext_resource type="FontFile" path="res://assets/fonts/NotoSerifSC-Bold.otf" id="2_fontbold"]
+[ext_resource type="Script" uid="uid://q4bcg41eiybq" path="res://scripts/game.gd" id="1_game"]
+[ext_resource type="FontFile" uid="uid://bdqrrmj64qopa" path="res://assets/fonts/NotoSerifSC-Bold.otf" id="2_fontbold"]
 
-[sub_resource type="StyleBoxFlat" id="Style_vnbox"]
-bg_color = Color(0.04, 0.05, 0.09, 0.82)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.85, 0.66, 0.42, 0.45)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-content_margin_left = 36.0
-content_margin_top = 26.0
-content_margin_right = 36.0
-content_margin_bottom = 24.0
-
-[sub_resource type="StyleBoxFlat" id="Style_nameplate"]
-bg_color = Color(0.85, 0.66, 0.42, 0.92)
+[sub_resource type="StyleBoxFlat" id="Style_savelabel"]
+content_margin_left = 18.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 8.0
+bg_color = Color(0.04, 0.05, 0.09, 0.7)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-content_margin_left = 26.0
-content_margin_top = 6.0
-content_margin_right = 26.0
-content_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="Style_choice"]
+content_margin_left = 30.0
+content_margin_top = 12.0
+content_margin_right = 30.0
+content_margin_bottom = 12.0
 bg_color = Color(0.04, 0.05, 0.09, 0.85)
 border_width_left = 2
 border_width_top = 2
@@ -41,12 +29,12 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_choice_hover"]
 content_margin_left = 30.0
 content_margin_top = 12.0
 content_margin_right = 30.0
 content_margin_bottom = 12.0
-
-[sub_resource type="StyleBoxFlat" id="Style_choice_hover"]
 bg_color = Color(0.85, 0.66, 0.42, 0.22)
 border_width_left = 2
 border_width_top = 2
@@ -57,38 +45,55 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-content_margin_left = 30.0
-content_margin_top = 12.0
-content_margin_right = 30.0
-content_margin_bottom = 12.0
 
-[sub_resource type="StyleBoxFlat" id="Style_savelabel"]
-bg_color = Color(0.04, 0.05, 0.09, 0.7)
+[sub_resource type="StyleBoxFlat" id="Style_vnbox"]
+content_margin_left = 36.0
+content_margin_top = 26.0
+content_margin_right = 36.0
+content_margin_bottom = 24.0
+bg_color = Color(0.04, 0.05, 0.09, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.66, 0.42, 0.45)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="Style_nameplate"]
+content_margin_left = 26.0
+content_margin_top = 6.0
+content_margin_right = 26.0
+content_margin_bottom = 6.0
+bg_color = Color(0.85, 0.66, 0.42, 0.92)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-content_margin_left = 18.0
-content_margin_top = 8.0
-content_margin_right = 18.0
-content_margin_bottom = 8.0
 
-[node name="Game" type="Control"]
+[node name="Game" type="Control" unique_id=827818572]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_game")
 
-[node name="Bg" type="TextureRect" parent="."]
+[node name="Bg" type="TextureRect" parent="." unique_id=1159658505]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="CharL" type="TextureRect" parent="."]
+mouse_filter = 2
+[node name="CharL" type="TextureRect" parent="." unique_id=1632274414]
 visible = false
 layout_mode = 1
 anchors_preset = 7
@@ -100,10 +105,13 @@ offset_left = -980.0
 offset_top = -1080.0
 offset_right = -260.0
 offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 0
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CharR" type="TextureRect" parent="."]
+mouse_filter = 2
+[node name="CharR" type="TextureRect" parent="." unique_id=751827975]
 visible = false
 layout_mode = 1
 anchors_preset = 7
@@ -115,40 +123,49 @@ offset_left = 260.0
 offset_top = -1080.0
 offset_right = 980.0
 offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 0
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CG" type="TextureRect" parent="."]
+mouse_filter = 2
+[node name="CG" type="TextureRect" parent="." unique_id=1138844826]
 visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ChapterLabel" type="Label" parent="."]
-theme_override_fonts/font = ExtResource("2_fontbold")
+mouse_filter = 2
+[node name="ChapterLabel" type="Label" parent="." unique_id=826809443]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_top = 26.0
 offset_bottom = 74.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 0.85)
+theme_override_fonts/font = ExtResource("2_fontbold")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("Style_savelabel")
 text = "章节名"
 horizontal_alignment = 1
 
-[node name="UILayer" type="Control" parent="."]
-layout_mode = 3
+[node name="UILayer" type="Control" parent="." unique_id=292118333]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
-[node name="MenuBtn" type="Button" parent="UILayer"]
-layout_mode = 3
+[node name="MenuBtn" type="Button" parent="UILayer" unique_id=699346737]
+layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -156,14 +173,15 @@ offset_left = -130.0
 offset_top = 22.0
 offset_right = -26.0
 offset_bottom = 96.0
+grow_horizontal = 0
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
 theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
 theme_override_font_sizes/font_size = 30
 text = "≡ 存档"
 
-[node name="Choices" type="VBoxContainer" parent="UILayer"]
+[node name="Choices" type="VBoxContainer" parent="UILayer" unique_id=169688261]
 visible = false
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -172,9 +190,11 @@ anchor_bottom = 0.5
 offset_left = -430.0
 offset_right = 430.0
 offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="Choice1" type="Button" parent="UILayer/Choices"]
+[node name="Choice1" type="Button" parent="UILayer/Choices" unique_id=1447421510]
 visible = false
 custom_minimum_size = Vector2(860, 96)
 layout_mode = 2
@@ -186,7 +206,7 @@ theme_override_styles/hover = SubResource("Style_choice_hover")
 theme_override_styles/focus = SubResource("Style_choice_hover")
 text = "选项1"
 
-[node name="Choice2" type="Button" parent="UILayer/Choices"]
+[node name="Choice2" type="Button" parent="UILayer/Choices" unique_id=994922044]
 visible = false
 custom_minimum_size = Vector2(860, 96)
 layout_mode = 2
@@ -198,7 +218,7 @@ theme_override_styles/hover = SubResource("Style_choice_hover")
 theme_override_styles/focus = SubResource("Style_choice_hover")
 text = "选项2"
 
-[node name="Choice3" type="Button" parent="UILayer/Choices"]
+[node name="Choice3" type="Button" parent="UILayer/Choices" unique_id=1402809715]
 visible = false
 custom_minimum_size = Vector2(860, 96)
 layout_mode = 2
@@ -210,7 +230,7 @@ theme_override_styles/hover = SubResource("Style_choice_hover")
 theme_override_styles/focus = SubResource("Style_choice_hover")
 text = "选项3"
 
-[node name="Choice4" type="Button" parent="UILayer/Choices"]
+[node name="Choice4" type="Button" parent="UILayer/Choices" unique_id=2041608422]
 visible = false
 custom_minimum_size = Vector2(860, 96)
 layout_mode = 2
@@ -222,8 +242,8 @@ theme_override_styles/hover = SubResource("Style_choice_hover")
 theme_override_styles/focus = SubResource("Style_choice_hover")
 text = "选项4"
 
-[node name="VNBox" type="Panel" parent="UILayer"]
-layout_mode = 3
+[node name="VNBox" type="Panel" parent="UILayer" unique_id=2059846842]
+layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -232,42 +252,51 @@ offset_left = 60.0
 offset_top = -320.0
 offset_right = -60.0
 offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_styles/panel = SubResource("Style_vnbox")
 
-[node name="NamePlate" type="Panel" parent="UILayer/VNBox"]
+mouse_filter = 2
+[node name="NamePlate" type="Panel" parent="UILayer/VNBox" unique_id=1752814818]
 layout_mode = 1
-anchors_preset = 0
 offset_left = 10.0
 offset_top = -52.0
 offset_right = 120.0
 offset_bottom = -6.0
 theme_override_styles/panel = SubResource("Style_nameplate")
 
-[node name="NameLabel" type="Label" parent="UILayer/VNBox/NamePlate"]
-theme_override_fonts/font = ExtResource("2_fontbold")
+mouse_filter = 2
+[node name="NameLabel" type="Label" parent="UILayer/VNBox/NamePlate" unique_id=571944457]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(0.11, 0.09, 0.06, 1)
+theme_override_fonts/font = ExtResource("2_fontbold")
 theme_override_font_sizes/font_size = 28
 text = "名字"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Text" type="RichTextLabel" parent="UILayer/VNBox"]
-theme_override_constants/line_separation = 8
+[node name="Text" type="RichTextLabel" parent="UILayer/VNBox" unique_id=210357248]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 39.0
 offset_top = 18.0
+offset_right = -45.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/default_color = Color(0.94, 0.92, 0.87, 1)
+theme_override_constants/line_separation = 8
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 scroll_active = false
 
-[node name="NextArrow" type="Label" parent="UILayer/VNBox"]
+[node name="NextArrow" type="Label" parent="UILayer/VNBox" unique_id=1016411398]
 visible = false
 layout_mode = 1
 anchors_preset = 3
@@ -279,12 +308,14 @@ offset_left = -60.0
 offset_top = -56.0
 offset_right = -20.0
 offset_bottom = -14.0
+grow_horizontal = 0
+grow_vertical = 0
 theme_override_colors/font_color = Color(0.85, 0.66, 0.42, 1)
 theme_override_font_sizes/font_size = 30
 text = "▼"
 
-[node name="CtrlBar" type="HBoxContainer" parent="UILayer"]
-layout_mode = 3
+[node name="CtrlBar" type="HBoxContainer" parent="UILayer" unique_id=1451616590]
+layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -294,9 +325,11 @@ offset_left = -620.0
 offset_top = -424.0
 offset_right = -40.0
 offset_bottom = -348.0
+grow_horizontal = 0
+grow_vertical = 0
 theme_override_constants/separation = 16
 
-[node name="AutoBtn" type="Button" parent="UILayer/CtrlBar"]
+[node name="AutoBtn" type="Button" parent="UILayer/CtrlBar" unique_id=2033960434]
 custom_minimum_size = Vector2(132, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
@@ -304,7 +337,7 @@ theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
 theme_override_font_sizes/font_size = 24
 text = "▶ 自动"
 
-[node name="SkipBtn" type="Button" parent="UILayer/CtrlBar"]
+[node name="SkipBtn" type="Button" parent="UILayer/CtrlBar" unique_id=1604231118]
 custom_minimum_size = Vector2(132, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
@@ -312,7 +345,7 @@ theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
 theme_override_font_sizes/font_size = 24
 text = "▶▶ 快进"
 
-[node name="HistoryBtn" type="Button" parent="UILayer/CtrlBar"]
+[node name="HistoryBtn" type="Button" parent="UILayer/CtrlBar" unique_id=881002100]
 custom_minimum_size = Vector2(132, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
@@ -320,7 +353,7 @@ theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
 theme_override_font_sizes/font_size = 24
 text = "≡ 历史"
 
-[node name="SettingsBtn" type="Button" parent="UILayer/CtrlBar"]
+[node name="SettingsBtn" type="Button" parent="UILayer/CtrlBar" unique_id=1452527931]
 custom_minimum_size = Vector2(132, 68)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
@@ -328,9 +361,9 @@ theme_override_colors/font_hover_color = Color(1, 0.85, 0.6, 1)
 theme_override_font_sizes/font_size = 24
 text = "⚙ 设置"
 
-[node name="HistoryPanel" type="Panel" parent="UILayer"]
+[node name="HistoryPanel" type="Panel" parent="UILayer" unique_id=1212164095]
 visible = false
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -338,9 +371,12 @@ offset_left = 80.0
 offset_top = 80.0
 offset_right = -80.0
 offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("Style_vnbox")
 
-[node name="HistoryText" type="RichTextLabel" parent="UILayer/HistoryPanel"]
+mouse_filter = 2
+[node name="HistoryText" type="RichTextLabel" parent="UILayer/HistoryPanel" unique_id=1355287365]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -349,13 +385,15 @@ offset_left = 40.0
 offset_top = 26.0
 offset_right = -40.0
 offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
 theme_override_colors/default_color = Color(0.94, 0.92, 0.87, 1)
 theme_override_font_sizes/normal_font_size = 26
 bbcode_enabled = true
 selection_enabled = true
-scroll_active = true
 
-[node name="HistoryClose" type="Button" parent="UILayer/HistoryPanel"]
+[node name="HistoryClose" type="Button" parent="UILayer/HistoryPanel" unique_id=303960862]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -366,13 +404,15 @@ offset_left = -240.0
 offset_top = -100.0
 offset_right = -40.0
 offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
 theme_override_font_sizes/font_size = 26
 text = "返回"
 
-[node name="SettingsPanel" type="Panel" parent="UILayer"]
+[node name="SettingsPanel" type="Panel" parent="UILayer" unique_id=534176133]
 visible = false
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -382,9 +422,12 @@ offset_left = -440.0
 offset_top = -280.0
 offset_right = 440.0
 offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("Style_vnbox")
 
-[node name="VBox" type="VBoxContainer" parent="UILayer/SettingsPanel"]
+mouse_filter = 2
+[node name="VBox" type="VBoxContainer" parent="UILayer/SettingsPanel" unique_id=2133797515]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -393,13 +436,15 @@ offset_left = 44.0
 offset_top = 34.0
 offset_right = -44.0
 offset_bottom = -34.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 24
 
-[node name="RowSpeed" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+[node name="RowSpeed" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox" unique_id=1339380143]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="SpeedLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowSpeed"]
+[node name="SpeedLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowSpeed" unique_id=321896840]
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
@@ -407,7 +452,7 @@ theme_override_font_sizes/font_size = 24
 text = "文字速度"
 vertical_alignment = 1
 
-[node name="SpeedSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowSpeed"]
+[node name="SpeedSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowSpeed" unique_id=1130703637]
 custom_minimum_size = Vector2(520, 40)
 layout_mode = 2
 min_value = 10.0
@@ -415,11 +460,11 @@ max_value = 120.0
 step = 5.0
 value = 45.0
 
-[node name="RowAuto" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+[node name="RowAuto" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox" unique_id=1285029514]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="AutoLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowAuto"]
+[node name="AutoLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowAuto" unique_id=187787220]
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
@@ -427,7 +472,7 @@ theme_override_font_sizes/font_size = 24
 text = "自动停留(秒)"
 vertical_alignment = 1
 
-[node name="AutoSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowAuto"]
+[node name="AutoSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowAuto" unique_id=1850196133]
 custom_minimum_size = Vector2(520, 40)
 layout_mode = 2
 min_value = 0.5
@@ -435,11 +480,11 @@ max_value = 5.0
 step = 0.1
 value = 1.8
 
-[node name="RowBgm" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+[node name="RowBgm" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox" unique_id=775375039]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="BgmLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowBgm"]
+[node name="BgmLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowBgm" unique_id=1971845519]
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
@@ -447,19 +492,18 @@ theme_override_font_sizes/font_size = 24
 text = "音乐音量"
 vertical_alignment = 1
 
-[node name="BgmSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowBgm"]
+[node name="BgmSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowBgm" unique_id=442884808]
 custom_minimum_size = Vector2(520, 40)
 layout_mode = 2
-min_value = 0.0
 max_value = 1.0
 step = 0.05
 value = 0.6
 
-[node name="RowSfx" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+[node name="RowSfx" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox" unique_id=1318149950]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="SfxLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowSfx"]
+[node name="SfxLabel" type="Label" parent="UILayer/SettingsPanel/VBox/RowSfx" unique_id=1109575075]
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
@@ -467,27 +511,26 @@ theme_override_font_sizes/font_size = 24
 text = "音效音量"
 vertical_alignment = 1
 
-[node name="SfxSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowSfx"]
+[node name="SfxSlider" type="HSlider" parent="UILayer/SettingsPanel/VBox/RowSfx" unique_id=1427935771]
 custom_minimum_size = Vector2(520, 40)
 layout_mode = 2
-min_value = 0.0
 max_value = 1.0
 step = 0.05
 value = 0.8
 
-[node name="Buttons" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox"]
+[node name="Buttons" type="HBoxContainer" parent="UILayer/SettingsPanel/VBox" unique_id=1999346953]
 layout_mode = 2
 theme_override_constants/separation = 24
 alignment = 1
 
-[node name="SettingsReset" type="Button" parent="UILayer/SettingsPanel/VBox/Buttons"]
+[node name="SettingsReset" type="Button" parent="UILayer/SettingsPanel/VBox/Buttons" unique_id=814623308]
 custom_minimum_size = Vector2(260, 64)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
 theme_override_font_sizes/font_size = 24
 text = "恢复默认"
 
-[node name="SettingsClose" type="Button" parent="UILayer/SettingsPanel/VBox/Buttons"]
+[node name="SettingsClose" type="Button" parent="UILayer/SettingsPanel/VBox/Buttons" unique_id=781896631]
 custom_minimum_size = Vector2(260, 64)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.9, 0.84, 1)
