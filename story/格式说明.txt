@@ -1,13 +1,14 @@
 游戏剧本格式说明（记事本直接改，保存即可生效）
 
-【背景】bg_xxx        切换背景图（assets/sprites/bg/ 里的文件名，不带.png）
-【立绘】char_xxx      显示立绘（assets/sprites/characters/ 文件名；写【立绘】无 会隐藏）
-【插图】crop_xxx.jpg  全屏CG（assets/cg/ 文件名）
-【选择】选项甲|选项乙  出现选项按钮（暂存扩展，当前版本选择后继续原剧情）
-角色名|台词           显示名牌+台词（角色名可用：查理/晓琳/照片/毕福吉/李磊/希朗首长/老船长/我）
-普通文本              旁白（无名牌）
+【章节】标题        章节名
+【背景】bg_xxx      切换背景（assets/sprites/bg/ 文件名）
+【立绘】char_xxx    显示立绘（assets/sprites/characters/ 文件名；"无"=清空；可带表情如 char_charlie_smile）
+【插图】xxx.jpg     全屏CG（assets/cg/）
+【音乐】bgm_xxx     切换BGM（assets/audio/bgm/scan/ 文件名，"无"=停止）
+【音效】sfx_xxx     播放音效（assets/audio/sfx/）
+【转场】            黑场转场：清空立绘和CG
+【标签】xx / 【跳转】xx   分支跳转
+【选择】甲:标签A|乙:标签B  选项（跳到对应标签）
+角色名|台词         名牌+台词；普通文本=旁白
 
-规则：
-- 引擎按行解析，一行一个指令；空行忽略
-- 【立绘】char_me 是主角本人（主角不显示立绘，写【立绘】无 可清空立绘）
-- 改完保存，重新运行游戏即生效（无需进编辑器）
+引擎按行解析；改完保存重开游戏生效。

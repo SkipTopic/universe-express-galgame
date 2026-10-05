@@ -361,6 +361,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _is_confirm(event: InputEvent) -> bool:
 	if event is InputEventMouseButton:
+		# 手机上一次触摸会同时产生"触摸+模拟鼠标"两个事件：
+		# 若都处理，一次点击=瞬间补完当前句+跳下一句，打字机效果永远看不见。
+		# 因此移动端只认触摸事件。
+		if OS.has_feature("mobile"):
+			return false
 		return event.button_index == MOUSE_BUTTON_LEFT and event.pressed
 	if event is InputEventScreenTouch:
 		return event.pressed
