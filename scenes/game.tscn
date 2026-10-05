@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_game"]
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSerifSC-Bold.otf" id="2_fontbold"]
 
 [sub_resource type="StyleBoxFlat" id="Style_vnbox"]
 bg_color = Color(0.04, 0.05, 0.09, 0.82)
@@ -127,6 +128,7 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="ChapterLabel" type="Label" parent="."]
+theme_override_fonts/font = ExtResource("2_fontbold")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -242,6 +244,7 @@ offset_bottom = -6.0
 theme_override_styles/panel = SubResource("Style_nameplate")
 
 [node name="NameLabel" type="Label" parent="UILayer/VNBox/NamePlate"]
+theme_override_fonts/font = ExtResource("2_fontbold")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -253,6 +256,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Text" type="RichTextLabel" parent="UILayer/VNBox"]
+theme_override_constants/line_separation = 8
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

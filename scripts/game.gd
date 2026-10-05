@@ -200,6 +200,10 @@ func _show_line(st: Dictionary) -> void:
 	var text: String = String(st.get("text", ""))
 	name_plate.visible = who != ""
 	name_label.text = who
+	# 名牌宽度自适应：字数×字号 + 左右留白（28=名牌字号，52=内容边距）
+	if who != "":
+		var plate: Panel = name_plate
+		plate.custom_minimum_size.x = who.length() * 28.0 + 52.0
 	text_label.text = text
 	text_label.visible_characters = 0
 	_typed_chars = 0.0
