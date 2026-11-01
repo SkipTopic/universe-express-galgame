@@ -26,6 +26,9 @@ var skip_mode: bool = false
 var _typed_chars: float = 0.0
 var _auto_timer: float = 0.0
 var _skip_timer: float = 0.0
+## 左右立绘位各自站着的"角色身份"（去掉表情后缀），用于区分"换表情"和"新角色上场"
+var _char_base_l: String = ""
+var _char_base_r: String = ""
 ## 已读台词（历史回顾用）
 var _history: Array[Dictionary] = []
 ## 当前选项（含跳转目标）
@@ -158,6 +161,8 @@ func _do_fade() -> void:
 	_fading = true
 	char_l.visible = false
 	char_r.visible = false
+	_char_base_l = ""
+	_char_base_r = ""
 	cg_rect.visible = false
 	if fade_rect != null and is_instance_valid(fade_rect):
 		var tr := create_tween()
@@ -269,22 +274,43 @@ func _apply_bg(value: String) -> void:
 		_fade_in(bg)
 
 
+## 取立绘名的"角色身份"：char_xilang_angry -> char_xilang（表情差分不影响身份）
+func _sprite_base(value: String) -> String:
+	for suf in ["_normal", "_smile", "_angry", "_sad", "_shock"]:
+		if value.ends_with(suf):
+			return value.trim_suffix(suf)
+	return value
+
 func _apply_sprite(value: String) -> void:
 	if value == "无":
 		char_l.visible = false
 		char_r.visible = false
+		_char_base_l = ""
+		_char_base_r = ""
 		return
 	var path := _resolve(DIR_CHAR, value + ".png")
 	if path.is_empty():
 		return
 	var tex := load(path) as Texture2D
-	if char_r.visible and char_r.texture == tex:
-		return  # 立绘没变就不动，避免重复淡入闪烁
+	var base := _sprite_base(value)
+	# 同一角色换表情（同贴图或差分）：只换脸，绝不换边——否则会左右站出两个自己
+	if _char_base_r == base:
+		if char_r.texture != tex:
+			char_r.texture = tex
+		_fade_in(char_r)
+		return
+	if _char_base_l == base:
+		if char_l.texture != tex:
+			char_l.texture = tex
+		_fade_in(char_l)
+		return
 	# 新说话的角色站右侧，上一个挪到左侧
 	if char_r.visible:
 		char_l.texture = char_r.texture
+		_char_base_l = _char_base_r
 		char_l.visible = true
 	char_r.texture = tex
+	_char_base_r = base
 	char_r.visible = true
 	_fade_in(char_r)
 
