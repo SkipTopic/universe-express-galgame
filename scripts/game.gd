@@ -13,6 +13,19 @@ const FADE := 0.25
 const SKIP_INTERVAL := 0.03
 ## 单次演出中允许的最大跳转次数，防止剧本写成死循环跳转
 const MAX_JUMPS := 2000
+## 说话人名 → 立绘角色（用于"说话者高亮、他人压暗"；由全语料投票统计得出）
+const SPEAKER_TO_CHAR := {
+	"我": "char_me",
+	"希朗首长": "char_xilang",
+	"查理": "char_charlie",
+	"晓琳": "char_xiaolin",
+	"照片": "char_photo",
+	"老船长": "char_bi",
+	"毕福吉": "char_bi",
+	"李磊": "char_lilei",
+}
+## 非说话立绘的压暗色（偏冷调，模拟千恋万花等galgame的暗化演出）
+const DIM_COLOR := Color(0.62, 0.60, 0.70)
 
 var steps: Array[Dictionary] = []
 ## 标签名 → 步骤下标（【标签】/【跳转】用）
@@ -99,7 +112,7 @@ func _load_chapter(ch: int) -> bool:
 	_scan_labels()
 	idx = 0
 	line_no = 0
-	chapter_label.text = "第%d章 · %s" % [ch, GameManager.chapter_title(ch)]
+	_show_chapter_title("第%d章 · %s" % [ch, GameManager.chapter_title(ch)])
 
 	# 读档恢复：快进到存档行号之前（背景/立绘照常应用，台词只计数不显示）
 	var target: int = GameManager.current_line
@@ -181,7 +194,7 @@ func _advance() -> void:
 		var st: Dictionary = steps[idx]
 		match String(st.get("type", "")):
 			"title":
-				chapter_label.text = String(st.get("value", ""))
+				_show_chapter_title(String(st.get("value", "")))
 			"bg":
 				_apply_bg(String(st.get("value", "")))
 			"sprite":
@@ -230,6 +243,7 @@ func _show_line(st: Dictionary) -> void:
 	var text: String = String(st.get("text", ""))
 	name_plate.visible = who != ""
 	name_label.text = who
+	_highlight_speaker(who)
 	# 名牌宽度自适应：字数×字号 + 左右留白（28=名牌字号，52=内容边距）
 	if who != "":
 		var plate: Panel = name_plate
@@ -267,6 +281,19 @@ func _fade_in(target: CanvasItem) -> void:
 	tw.tween_property(target, "modulate:a", 1.0, FADE)
 
 
+## 章节名展示数秒后自动淡出——常驻横条会一直压在立绘头顶，galgame 只在开章时提示
+var _chapter_tween: Tween
+
+func _show_chapter_title(t: String) -> void:
+	chapter_label.text = t
+	chapter_label.modulate.a = 1.0
+	if _chapter_tween != null and _chapter_tween.is_valid():
+		_chapter_tween.kill()
+	_chapter_tween = create_tween()
+	_chapter_tween.tween_interval(2.8)
+	_chapter_tween.tween_property(chapter_label, "modulate:a", 0.0, 0.8)
+
+
 func _apply_bg(value: String) -> void:
 	var path := _resolve(DIR_BG, value + ".png")
 	if not path.is_empty():
@@ -287,6 +314,8 @@ func _apply_sprite(value: String) -> void:
 		char_r.visible = false
 		_char_base_l = ""
 		_char_base_r = ""
+		_tint_side(char_l, true)
+		_tint_side(char_r, true)
 		return
 	var path := _resolve(DIR_CHAR, value + ".png")
 	if path.is_empty():
@@ -298,11 +327,15 @@ func _apply_sprite(value: String) -> void:
 		if char_r.texture != tex:
 			char_r.texture = tex
 		_fade_in(char_r)
+		_tint_side(char_r, true)
+		_tint_side(char_l, false)
 		return
 	if _char_base_l == base:
 		if char_l.texture != tex:
 			char_l.texture = tex
 		_fade_in(char_l)
+		_tint_side(char_l, true)
+		_tint_side(char_r, false)
 		return
 	# 新说话的角色站右侧，上一个挪到左侧
 	if char_r.visible:
@@ -313,6 +346,30 @@ func _apply_sprite(value: String) -> void:
 	_char_base_r = base
 	char_r.visible = true
 	_fade_in(char_r)
+	_tint_side(char_r, true)
+	_tint_side(char_l, false)
+
+
+## 说话者立绘恢复亮度、另一个压暗；只动 RGB 通道，不碰 alpha（避免和淡入协程打架）
+func _tint_side(c: TextureRect, bright: bool) -> void:
+	var target := Color(1, 1, 1) if bright else DIM_COLOR
+	var tw: Tween = create_tween()
+	tw.tween_property(c, "modulate:r", target.r, 0.18)
+	tw.parallel().tween_property(c, "modulate:g", target.g, 0.18)
+	tw.parallel().tween_property(c, "modulate:b", target.b, 0.18)
+
+
+## 台词说话人 → 立绘明暗。说话人不在场上（旁白/画外音/未出场角色）时保持现状
+func _highlight_speaker(who: String) -> void:
+	var base := String(SPEAKER_TO_CHAR.get(who, ""))
+	if base == "":
+		return
+	if _char_base_r == base:
+		_tint_side(char_r, true)
+		_tint_side(char_l, false)
+	elif _char_base_l == base:
+		_tint_side(char_l, true)
+		_tint_side(char_r, false)
 
 
 func _apply_cg(value: String) -> bool:
