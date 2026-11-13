@@ -8,12 +8,11 @@ var _max_frames := 40
 
 func _ready() -> void:
 	var ch := OS.get_environment("TEST_CH")
-	if ch.is_empty():
-		set_process(false)
-		return
 	var fr := OS.get_environment("TEST_FRAMES")
 	if not fr.is_empty():
 		_max_frames = int(fr)
+	if ch.is_empty():
+		return  # 不切场景（渲染标题画面用），只按 TEST_FRAMES 计帧退出
 	GameManager.current_chapter = int(ch)
 	var ln := OS.get_environment("TEST_LINE")
 	GameManager.current_line = int(ln) if not ln.is_empty() else 0

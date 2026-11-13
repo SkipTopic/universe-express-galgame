@@ -27,7 +27,6 @@ buses/default_bus_layout="res://default_bus_layout.tres"
 GameManager="*res://scripts/game_manager.gd"
 Settings="*res://scripts/settings.gd"
 AudioManager="*res://scripts/audio_manager.gd"
-TestProbe="*res://scripts/test_probe.gd"
 
 [display]
 

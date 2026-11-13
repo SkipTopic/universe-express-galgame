@@ -1,3 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# 帧验证归档（体积大，不入库）
+_archive/
+_tmp_audit/frames*
+_tmp_audit/smoke/
+_tmp_audit/verify/

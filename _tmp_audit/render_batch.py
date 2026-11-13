@@ -15,6 +15,7 @@ def base(v):
 
 def simulate():
     samples = []
+    SKIP_CMDS = ('【章节】', '【音乐】', '【音效】', '【标签】', '【跳转】', '【选择】')
     for f in sorted(glob.glob(os.path.join(PROJ, 'story', 'ch*.txt'))):
         ch = int(re.search(r'ch(\d+)', os.path.basename(f)).group(1))
         raw = [t.strip() for t in open(f, encoding='utf-8').read().splitlines()]
@@ -23,6 +24,8 @@ def simulate():
         L = R = None; bg = None; cg = None; ln = 0
         seen = set()
         for i, t in enumerate(lines):
+            if any(t.startswith(c) for c in SKIP_CMDS):
+                continue
             if t.startswith('【背景】'):
                 v = t[4:]
                 if v != bg and ln + 1 <= n:
@@ -61,12 +64,21 @@ def simulate():
                         seen.add(key); samples.append((ch, ln + 1, 'fade'))
             else:
                 ln += 1
-    return samples
+    # 目录名防冲突：同名行号加序号
+    out, used = [], set()
+    for ch, line, tag in samples:
+        name = f"c{ch:02d}_L{line:04d}"
+        k = 0
+        while name in used:
+            k += 1
+            name = f"c{ch:02d}_L{line:04d}_{k}"
+        used.add(name)
+        out.append((ch, line, tag, name))
+    return out
 
 def render(s):
-    ch, line, tag = s
-    name = f"c{ch:02d}_L{line:04d}"
-    d = os.path.join(ROOT, 'frames', name)
+    ch, line, tag, name = s
+    d = os.path.join(ROOT, 'frames2', name)
     os.makedirs(d, exist_ok=True)
     env = dict(os.environ, TEST_CH=str(ch), TEST_LINE=str(line), TEST_FRAMES='10')
     try:
@@ -83,7 +95,7 @@ def render(s):
 def main():
     samples = simulate()
     print(f'采样点: {len(samples)}', flush=True)
-    os.makedirs(os.path.join(ROOT, 'frames'), exist_ok=True)
+    os.makedirs(os.path.join(ROOT, 'frames2'), exist_ok=True)
     results = []
     with ThreadPoolExecutor(max_workers=4) as ex:
         for i, r in enumerate(ex.map(render, samples)):
@@ -108,7 +120,7 @@ def main():
             x, y = (j % COLS) * TILE, (j // COLS) * (TILE * 9 // 16)
             sheet.paste(im, (x, y))
             d.text((x + 8, y + 8), f'{name} {tag}', fill=(255, 220, 120))
-        p = os.path.join(ROOT, 'sheets', f'sheet{len(sheets)+1:02d}.jpg')
+        p = os.path.join(ROOT, 'sheets2', f'sheet{len(sheets)+1:02d}.jpg')
         os.makedirs(os.path.dirname(p), exist_ok=True)
         sheet.save(p, quality=88)
         sheets.append(p)
