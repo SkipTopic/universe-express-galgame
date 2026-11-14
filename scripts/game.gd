@@ -139,6 +139,11 @@ func _load_chapter(ch: int) -> bool:
 
 	if idx >= steps.size():
 		return false
+	# 全新开始的章节从黑场淡入（读档恢复不黑场），统一每章的开场演出
+	if GameManager.current_line == 0:
+		fade_rect.modulate.a = 1.0
+		var tw := create_tween()
+		tw.tween_property(fade_rect, "modulate:a", 0.0, 0.45)
 	_vnbox_slide_in()
 	_advance()
 	return true
@@ -217,8 +222,10 @@ func _advance() -> void:
 			"sprite":
 				_apply_sprite(String(st.get("value", "")))
 			"cg":
-				# CG 是一次点击关闭的展示步骤，停下等待
+				# CG 是一次点击关闭的展示步骤，停下等待；
+				# 展示期间藏起对话框，否则上一行文字一直压在插图上
 				if _apply_cg(String(st.get("value", ""))):
+					_hide_vn_for_cg()
 					idx += 1
 					return
 			"fade":
@@ -258,6 +265,8 @@ func _advance() -> void:
 func _show_line(st: Dictionary) -> void:
 	var who: String = String(st.get("name", ""))
 	var text: String = String(st.get("text", ""))
+	if _vn_hidden_for_cg:
+		_vnbox_slide_in()  # 从插图回到台词：对话框重新滑入
 	name_plate.visible = who != ""
 	name_label.text = who
 	_highlight_speaker(who)
@@ -324,8 +333,11 @@ var _vn_shake_tween: Tween
 var _vn_base_y := -1.0
 var _plate_base_x := 10.0
 var _last_speaker := ""
+## 插图展示期间对话框被整体藏起的标记；下一句台词经 _vnbox_slide_in 恢复
+var _vn_hidden_for_cg := false
 
 func _vnbox_slide_in() -> void:
+	_vn_hidden_for_cg = false
 	if _vn_base_y < 0.0:
 		_vn_base_y = vnbox.position.y
 	if _vn_slide_tween != null and _vn_slide_tween.is_valid():
@@ -341,6 +353,15 @@ func _vnbox_slide_in() -> void:
 	_vn_slide_tween.tween_property(vnbox, "position:y", _vn_base_y, 0.45)\
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_vn_slide_tween.tween_property(vnbox, "modulate:a", 1.0, 0.32)
+
+
+## 插图/CG 展示期间把整个对话框藏起来（含名牌/▼），
+## 连续多张插图之间保持隐藏，下一句台词时才恢复
+func _hide_vn_for_cg() -> void:
+	if _vn_slide_tween != null and _vn_slide_tween.is_valid():
+		_vn_slide_tween.kill()
+	vnbox.modulate.a = 0.0
+	_vn_hidden_for_cg = true
 
 
 ## 名字牌弹入：说话人变化时才播，同一人连着说话不打扰
@@ -449,10 +470,16 @@ func _tint_side(c: TextureRect, bright: bool) -> void:
 	tw.parallel().tween_property(c, "modulate:b", target.b, 0.18)
 
 
-## 台词说话人 → 立绘明暗。说话人不在场上（旁白/画外音/未出场角色）时保持现状
+## 台词说话人 → 立绘明暗。旁白/画外音 = 此刻没人说话，全场压暗，
+## 下一个有立绘的说话人开口时再恢复高亮
+## （修复：纯动作旁白行顶着上一说话人的高亮，看起来像他在说话）
 func _highlight_speaker(who: String) -> void:
 	var base := String(SPEAKER_TO_CHAR.get(who, ""))
 	if base == "":
+		if char_l.visible:
+			_tint_side(char_l, false)
+		if char_r.visible:
+			_tint_side(char_r, false)
 		return
 	if _char_base_r == base:
 		_tint_side(char_r, true)

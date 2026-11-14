@@ -73,12 +73,111 @@ func _setup_version() -> void:
 	$VersionLabel.text = "宇宙快递员 v%s" % v
 
 
-## 从头开始：必须清空进度，否则读过档后会接着旧进度走
+## 从头开始：必须清空进度，否则读过档后会接着旧进度走。
+## 有自动存档时先弹确认，防止误触把进度从头覆盖
 func _on_start() -> void:
+	if GameManager.has_auto():
+		_show_newgame_confirm()
+		return
+	_start_game()
+
+
+func _start_game() -> void:
 	GameManager.current_chapter = 1
 	GameManager.current_line = 0
 	GameManager.choice_history.clear()
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
+
+
+## ── 重新开始确认弹窗（纯代码构建，不改场景文件）──
+var _confirm_layer: Control
+
+func _show_newgame_confirm() -> void:
+	if _confirm_layer != null and is_instance_valid(_confirm_layer):
+		return
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.08, 0.08, 0.12, 0.96)
+	style.border_color = Color(0.85, 0.75, 0.54)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(6)
+	style.content_margin_left = 52.0
+	style.content_margin_right = 52.0
+	style.content_margin_top = 40.0
+	style.content_margin_bottom = 40.0
+
+	var btn_style := StyleBoxFlat.new()
+	btn_style.bg_color = Color(0.16, 0.16, 0.22)
+	btn_style.border_color = Color(0.85, 0.75, 0.54)
+	btn_style.set_border_width_all(1)
+	btn_style.set_corner_radius_all(4)
+	btn_style.content_margin_top = 18.0
+	btn_style.content_margin_bottom = 18.0
+	var btn_hover := btn_style.duplicate() as StyleBoxFlat
+	btn_hover.bg_color = Color(0.26, 0.24, 0.30)
+
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", style)
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 26)
+	panel.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "检测到自动存档"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 30)
+	title.add_theme_color_override("font_color", Color(0.85, 0.75, 0.54))
+	vbox.add_child(title)
+
+	var msg := Label.new()
+	msg.text = "重新开始将从第1章进行，\n自动存档的进度会被覆盖。\n确定要重新开始吗？"
+	msg.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	msg.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(msg)
+
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 30)
+	vbox.add_child(row)
+	var ok := Button.new()
+	ok.text = "重新开始"
+	ok.custom_minimum_size = Vector2(220, 72)
+	ok.add_theme_font_size_override("font_size", 24)
+	ok.add_theme_stylebox_override("normal", btn_style)
+	ok.add_theme_stylebox_override("hover", btn_hover)
+	ok.pressed.connect(func () -> void:
+		_close_newgame_confirm()
+		_start_game())
+	row.add_child(ok)
+	var cancel := Button.new()
+	cancel.text = "返回"
+	cancel.custom_minimum_size = Vector2(220, 72)
+	cancel.add_theme_font_size_override("font_size", 24)
+	cancel.add_theme_stylebox_override("normal", btn_style)
+	cancel.add_theme_stylebox_override("hover", btn_hover)
+	cancel.pressed.connect(_close_newgame_confirm)
+	row.add_child(cancel)
+
+	var layer := Control.new()
+	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var shade := ColorRect.new()
+	shade.color = Color(0.0, 0.0, 0.0, 0.62)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.gui_input.connect(func (ev: InputEvent) -> void:
+		if ev is InputEventMouseButton and ev.pressed:
+			_close_newgame_confirm())
+	layer.add_child(shade)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.add_child(panel)
+	layer.add_child(center)
+	add_child(layer)
+	_confirm_layer = layer
+
+
+func _close_newgame_confirm() -> void:
+	if _confirm_layer != null and is_instance_valid(_confirm_layer):
+		_confirm_layer.queue_free()
+	_confirm_layer = null
 
 
 func _on_continue() -> void:
