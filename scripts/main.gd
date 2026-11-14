@@ -10,7 +10,7 @@ const TITLE_BGM := "bgm_scan19"
 @onready var continue_btn: Button = $Menu/ContinueButton
 @onready var bg: TextureRect = $Bg
 @onready var title_block: Control = $TitleBlock
-@onready var menu: VBoxContainer = $Menu
+@onready var menu: Control = $Menu
 
 
 func _ready() -> void:
@@ -20,7 +20,6 @@ func _ready() -> void:
 	$Menu/QuitButton.pressed.connect(_on_quit)
 	# 没有自动存档时"继续游戏"不可点
 	continue_btn.disabled = not GameManager.has_auto()
-	$Menu/StartButton.grab_focus()
 	_setup_visual()
 	_setup_version()
 	AudioManager.play_bgm(TITLE_BGM)
@@ -38,12 +37,35 @@ func _setup_visual() -> void:
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tw.tween_property(bg, "scale", Vector2(1.04, 1.04), 16.0)\
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	# 标题块与菜单淡入
+	# 标题块淡入 + 菜单按钮从左到右依次滑入
 	title_block.modulate.a = 0.0
-	menu.modulate.a = 0.0
+	title_block.position.y += 26.0
 	var tw2: Tween = create_tween()
+	tw2.set_parallel(true)
 	tw2.tween_property(title_block, "modulate:a", 1.0, 0.7)
-	tw2.parallel().tween_property(menu, "modulate:a", 1.0, 0.7)
+	tw2.tween_property(title_block, "position:y", title_block.position.y - 26.0, 0.7)\
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_animate_menu()
+
+
+## 菜单四按钮：从左侧依次滑入（上→下），带回弹；动画结束后再把焦点给开始按钮
+func _animate_menu() -> void:
+	var buttons: Array[Button] = [
+		$Menu/StartButton, $Menu/ContinueButton, $Menu/LoadButton, $Menu/QuitButton,
+	]
+	for i in buttons.size():
+		var b := buttons[i]
+		var target_x := b.position.x
+		b.modulate.a = 0.0
+		b.position.x = target_x - 110.0
+		var tw: Tween = create_tween()
+		tw.tween_interval(0.45 + i * 0.14)
+		tw.tween_property(b, "modulate:a", 1.0, 0.32)
+		tw.parallel().tween_property(b, "position:x", target_x, 0.42)\
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	var tw_end: Tween = create_tween()
+	tw_end.tween_interval(1.3)
+	tw_end.tween_callback(func () -> void: buttons[0].grab_focus())
 
 
 func _setup_version() -> void:

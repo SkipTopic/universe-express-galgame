@@ -6,7 +6,7 @@
 像是金黄色未成熟的苹果一样。
 
 【转场】
-【背景】bg_deadplanet
+【背景】bg_desert_planet
 
 慢慢地，飞船降落在这颗星球上。
 我驾驶着飞船，在这颗星球上寻找落脚点。
@@ -77,7 +77,7 @@
 我点点头，离开了驾驶室。
 
 【转场】
-【背景】bg_deadplanet
+【背景】bg_desert_planet
 【立绘】无
 
 船舱打开了，
@@ -114,7 +114,7 @@
 电梯停住了，门缓缓地打开了……
 
 【转场】
-【背景】bg_deadplanet
+【背景】bg_desert_planet
 
 天已经完全变暗了。
 天上出现了些屈指可数的星星，
@@ -553,7 +553,7 @@
 《Blackhand全球黑客比赛》……
 
 【转场】
-【背景】bg_hall
+【背景】bg_xilang_office
 【音乐】bgm_scan18
 【立绘】char_charlie
 

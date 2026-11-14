@@ -73,7 +73,7 @@
 
 【转场】
 【音乐】bgm_scan10
-【背景】bg_office_military
+【背景】bg_xilang_office
 我就这样来到了希朗首长的办公室
 不知道为什么，这个办公室让我有种前所未有的压迫感
 【立绘】char_xilang
@@ -115,7 +115,7 @@
 
 【转场】
 【音乐】bgm_scan19
-【背景】bg_hall
+【背景】bg_paradise
 【立绘】char_xilang
 停好了车后，首长带着我走进了里面
 前台小哥正在用 RS2000 打着游戏，连首长站在面前都没发现

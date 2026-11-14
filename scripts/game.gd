@@ -52,6 +52,7 @@ var _options: Array[Dictionary] = []
 @onready var char_r: TextureRect = $CharR
 @onready var cg_rect: TextureRect = $CG
 @onready var chapter_label: Label = $ChapterLabel
+@onready var vnbox: Panel = $UILayer/VNBox
 @onready var name_plate: Panel = $UILayer/VNBox/NamePlate
 @onready var name_label: Label = $UILayer/VNBox/NamePlate/NameLabel
 @onready var text_label: RichTextLabel = $UILayer/VNBox/Text
@@ -115,6 +116,8 @@ func _load_chapter(ch: int) -> bool:
 	_show_chapter_title("第%d章 · %s" % [ch, GameManager.chapter_title(ch)])
 
 	# 读档恢复：快进到存档行号之前（背景/立绘照常应用，台词只计数不显示）
+	# ⚠️【转场】必须在这里同步执行"清场"：否则恢复后上一场次的立绘会残留到新场景
+	# （表现为"军长顶着希朗的脸"这类灵异现象）
 	var target: int = GameManager.current_line
 	while idx < steps.size() and line_no < target:
 		var st: Dictionary = steps[idx]
@@ -125,11 +128,18 @@ func _load_chapter(ch: int) -> bool:
 				_apply_sprite(String(st.get("value", "")))
 			"line":
 				line_no += 1
+			"fade":
+				char_l.visible = false
+				char_r.visible = false
+				_char_base_l = ""
+				_char_base_r = ""
+				cg_rect.visible = false
 		idx += 1
 	GameManager.current_line = line_no
 
 	if idx >= steps.size():
 		return false
+	_vnbox_slide_in()
 	_advance()
 	return true
 
@@ -181,8 +191,13 @@ func _do_fade() -> void:
 		var tr := create_tween()
 		tr.tween_property(fade_rect, "modulate:a", 1.0, 0.35)
 		await tr.finished
+		# 黑场最黑的一瞬重置对话框，渐出时让它重新滑入
+		if _vn_tween != null and _vn_tween.is_valid():
+			_vn_tween.kill()
+		_last_speaker = ""
 		var tr2 := create_tween()
 		tr2.tween_property(fade_rect, "modulate:a", 0.0, 0.35)
+		_vnbox_slide_in()
 		await tr2.finished
 	_fading = false
 
@@ -244,6 +259,9 @@ func _show_line(st: Dictionary) -> void:
 	name_plate.visible = who != ""
 	name_label.text = who
 	_highlight_speaker(who)
+	if who != "" and who != _last_speaker:
+		_nameplate_pop()
+	_last_speaker = who
 	# 名牌宽度自适应：字数×字号 + 左右留白（28=名牌字号，52=内容边距）
 	if who != "":
 		var plate: Panel = name_plate
@@ -294,6 +312,59 @@ func _show_chapter_title(t: String) -> void:
 	_chapter_tween.tween_property(chapter_label, "modulate:a", 0.0, 0.8)
 
 
+## ── 演出动画 ──
+## 对话框从屏幕下方滑入（章节开始 / 转场结束后各播一次）
+var _vn_tween: Tween
+var _vn_base_y := -1.0
+var _last_speaker := ""
+
+func _vnbox_slide_in() -> void:
+	if _vn_base_y < 0.0:
+		_vn_base_y = vnbox.position.y
+	if _vn_tween != null and _vn_tween.is_valid():
+		_vn_tween.kill()
+	vnbox.position.y = _vn_base_y + 80.0
+	vnbox.modulate.a = 0.0
+	_vn_tween = create_tween()
+	_vn_tween.set_parallel(true)
+	_vn_tween.tween_property(vnbox, "position:y", _vn_base_y, 0.45)\
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_vn_tween.tween_property(vnbox, "modulate:a", 1.0, 0.32)
+
+
+## 名字牌弹入：说话人变化时才播，同一人连着说话不打扰
+func _nameplate_pop() -> void:
+	if _vn_tween != null and _vn_tween.is_valid():
+		_vn_tween.kill()
+	var base_x := name_plate.position.x
+	name_plate.position.x = base_x - 26.0
+	name_plate.modulate.a = 0.0
+	_vn_tween = create_tween()
+	_vn_tween.set_parallel(true)
+	_vn_tween.tween_property(name_plate, "position:x", base_x, 0.22)\
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_vn_tween.tween_property(name_plate, "modulate:a", 1.0, 0.16)
+
+
+## 震惊演出：整个画面抖一下 + 对话框再抖一下，幅度递减收束
+var _shake_tween: Tween
+
+func _shake_on_shock() -> void:
+	if _shake_tween != null and _shake_tween.is_valid():
+		_shake_tween.kill()
+	self.position = Vector2.ZERO
+	_shake_tween = create_tween()
+	for off: Vector2 in [Vector2(16, 10), Vector2(-13, 7), Vector2(9, -6), Vector2(-5, 3), Vector2(2, -1), Vector2.ZERO]:
+		_shake_tween.tween_property(self, "position", off, 0.045)
+	if _vn_tween != null and _vn_tween.is_valid():
+		_vn_tween.kill()
+	var base := vnbox.position
+	vnbox.position = base + Vector2(-12, 0)
+	var tw2: Tween = create_tween()
+	for off: Vector2 in [Vector2(10, 0), Vector2(-7, 0), Vector2(4, 0), Vector2.ZERO]:
+		tw2.tween_property(vnbox, "position", base + off, 0.05)
+
+
 func _apply_bg(value: String) -> void:
 	var path := _resolve(DIR_BG, value + ".png")
 	if not path.is_empty():
@@ -322,6 +393,9 @@ func _apply_sprite(value: String) -> void:
 		return
 	var tex := load(path) as Texture2D
 	var base := _sprite_base(value)
+	# 震惊差分登场 = 演出重音：画面+对话框一起抖
+	if value.ends_with("_shock"):
+		_shake_on_shock()
 	# 同一角色换表情（同贴图或差分）：只换脸，绝不换边——否则会左右站出两个自己
 	if _char_base_r == base:
 		if char_r.texture != tex:
@@ -455,7 +529,7 @@ func _is_confirm(event: InputEvent) -> bool:
 	return event.is_action_pressed("ui_accept")
 
 
-## ── 选项：场景里预置4个按钮，用到几个显示几个 ──
+## ── 选项：场景里预置4个按钮，用到几个显示几个；出现时依次淡入+整体回弹 ──
 func _show_choices(options: Array) -> void:
 	_options.clear()
 	for o in options:
@@ -469,10 +543,25 @@ func _show_choices(options: Array) -> void:
 		btn.visible = i <= _options.size()
 		if i <= _options.size():
 			btn.text = String(_options[i - 1].get("text", ""))
+			btn.modulate.a = 0.0
 			for conn in btn.pressed.get_connections():
 				btn.pressed.disconnect(conn["callable"])
 			btn.pressed.connect(_on_choice.bind(i))
 	choices.visible = true
+	choices.pivot_offset = Vector2(430.0, 40.0)
+	choices.scale = Vector2(0.94, 0.94)
+	choices.modulate.a = 0.0
+	var tw: Tween = create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(choices, "modulate:a", 1.0, 0.22)
+	tw.tween_property(choices, "scale", Vector2.ONE, 0.28)\
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	for i in range(1, 5):
+		if i <= _options.size():
+			var btn: Button = choices.get_node("Choice%d" % i)
+			var tb: Tween = create_tween()
+			tb.tween_interval(0.1 + i * 0.08)
+			tb.tween_property(btn, "modulate:a", 1.0, 0.2)
 
 
 func _on_choice(chosen: int) -> void:
@@ -521,6 +610,9 @@ func _toggle_history() -> void:
 	if history_panel.visible:
 		_set_auto(false)
 		_refresh_history()
+		history_panel.modulate.a = 0.0
+		var tw: Tween = create_tween()
+		tw.tween_property(history_panel, "modulate:a", 1.0, 0.2)
 
 
 func _close_history() -> void:
@@ -551,6 +643,9 @@ func _toggle_settings() -> void:
 	if settings_panel.visible:
 		_set_auto(false)
 		_sync_settings_ui()
+		settings_panel.modulate.a = 0.0
+		var tw: Tween = create_tween()
+		tw.tween_property(settings_panel, "modulate:a", 1.0, 0.2)
 
 
 func _close_settings() -> void:

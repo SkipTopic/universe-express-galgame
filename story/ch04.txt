@@ -1,6 +1,6 @@
 【章节】第4章 登船
 【音乐】bgm_scan10
-【背景】bg_server
+【背景】bg_storage
 
 她逐渐向我走来，走到有光亮的地方，我才看清楚。
 【立绘】char_photo
@@ -21,7 +21,7 @@
 不过还是不要问她较好。
 
 【转场】
-【背景】bg_cabin
+【背景】bg_lounge
 【音乐】bgm_scan08
 【立绘】char_photo
 【立绘】char_charlie

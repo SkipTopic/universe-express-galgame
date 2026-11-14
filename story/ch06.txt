@@ -108,7 +108,7 @@
 我和晓琳一组，查理和照片一组。
 看样子一切都准备好了。
 
-【立绘】char_charlie
+【立绘】char_photo
 
 照片|那个，我还不知道这里的治安怎样？
 照片|我们可以放心逛街吗？
@@ -394,7 +394,7 @@
 查理|我要报警。
 
 【转场】
-【背景】bg_express_office
+【背景】bg_police
 【音乐】bgm_scan05
 【立绘】char_charlie
 

@@ -154,7 +154,7 @@
 我赶紧停止了思想。
 
 【转场】
-【背景】bg_messhall
+【背景】bg_lounge
 【音乐】bgm_scan05
 【立绘】char_photo
 【立绘】char_xiaolin
