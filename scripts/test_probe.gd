@@ -5,6 +5,8 @@ extends Node
 
 var _frames := 0
 var _max_frames := 40
+var _skip_pending := false
+var _skip_done := false
 
 func _ready() -> void:
 	var ch := OS.get_environment("TEST_CH")
@@ -13,6 +15,7 @@ func _ready() -> void:
 		_max_frames = int(fr)
 	if ch.is_empty():
 		return  # 不切场景（渲染标题画面用），只按 TEST_FRAMES 计帧退出
+	_skip_pending = OS.get_environment("TEST_SKIP") == "1"
 	GameManager.current_chapter = int(ch)
 	var ln := OS.get_environment("TEST_LINE")
 	GameManager.current_line = int(ln) if not ln.is_empty() else 0
@@ -20,6 +23,11 @@ func _ready() -> void:
 
 
 func _process(_d: float) -> void:
+	if _skip_pending and not _skip_done:
+		var cs := get_tree().current_scene
+		if cs != null and cs.has_method("_set_skip"):
+			cs.call("_set_skip", true)
+			_skip_done = true
 	_frames += 1
 	if _frames >= _max_frames:
 		set_process(false)

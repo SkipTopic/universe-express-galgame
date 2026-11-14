@@ -192,9 +192,11 @@ func _do_fade() -> void:
 		tr.tween_property(fade_rect, "modulate:a", 1.0, 0.35)
 		await tr.finished
 		# 黑场最黑的一瞬重置对话框，渐出时让它重新滑入
-		if _vn_tween != null and _vn_tween.is_valid():
-			_vn_tween.kill()
-		_last_speaker = ""
+		# （快进/自动模式不打扰：保持对话框原样，避免快进中"消失又出现"）
+		if not skip_mode and not auto_mode:
+			if _vn_slide_tween != null and _vn_slide_tween.is_valid():
+				_vn_slide_tween.kill()
+			_last_speaker = ""
 		var tr2 := create_tween()
 		tr2.tween_property(fade_rect, "modulate:a", 0.0, 0.35)
 		_vnbox_slide_in()
@@ -313,56 +315,70 @@ func _show_chapter_title(t: String) -> void:
 
 
 ## ── 演出动画 ──
-## 对话框从屏幕下方滑入（章节开始 / 转场结束后各播一次）
-var _vn_tween: Tween
+## 三类动画各自持有独立 Tween，严禁共用：共用会在快进/自动模式下互相 kill，
+## 把滑到一半的对话框 alpha 永久卡在 0（对话框消失 bug 的根源）。
+## 快进(skip)或自动(auto)模式下所有入场动画直接就位不播放——快进节奏里没意义。
+var _vn_slide_tween: Tween
+var _plate_tween: Tween
+var _vn_shake_tween: Tween
 var _vn_base_y := -1.0
+var _plate_base_x := 10.0
 var _last_speaker := ""
 
 func _vnbox_slide_in() -> void:
 	if _vn_base_y < 0.0:
 		_vn_base_y = vnbox.position.y
-	if _vn_tween != null and _vn_tween.is_valid():
-		_vn_tween.kill()
+	if _vn_slide_tween != null and _vn_slide_tween.is_valid():
+		_vn_slide_tween.kill()
+	if skip_mode or auto_mode:
+		vnbox.position.y = _vn_base_y
+		vnbox.modulate.a = 1.0
+		return
 	vnbox.position.y = _vn_base_y + 80.0
 	vnbox.modulate.a = 0.0
-	_vn_tween = create_tween()
-	_vn_tween.set_parallel(true)
-	_vn_tween.tween_property(vnbox, "position:y", _vn_base_y, 0.45)\
+	_vn_slide_tween = create_tween()
+	_vn_slide_tween.set_parallel(true)
+	_vn_slide_tween.tween_property(vnbox, "position:y", _vn_base_y, 0.45)\
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	_vn_tween.tween_property(vnbox, "modulate:a", 1.0, 0.32)
+	_vn_slide_tween.tween_property(vnbox, "modulate:a", 1.0, 0.32)
 
 
 ## 名字牌弹入：说话人变化时才播，同一人连着说话不打扰
 func _nameplate_pop() -> void:
-	if _vn_tween != null and _vn_tween.is_valid():
-		_vn_tween.kill()
-	var base_x := name_plate.position.x
-	name_plate.position.x = base_x - 26.0
+	if _plate_tween != null and _plate_tween.is_valid():
+		_plate_tween.kill()
+	if skip_mode or auto_mode:
+		name_plate.position.x = _plate_base_x
+		name_plate.modulate.a = 1.0
+		return
+	name_plate.position.x = _plate_base_x - 26.0
 	name_plate.modulate.a = 0.0
-	_vn_tween = create_tween()
-	_vn_tween.set_parallel(true)
-	_vn_tween.tween_property(name_plate, "position:x", base_x, 0.22)\
+	_plate_tween = create_tween()
+	_plate_tween.set_parallel(true)
+	_plate_tween.tween_property(name_plate, "position:x", _plate_base_x, 0.22)\
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_vn_tween.tween_property(name_plate, "modulate:a", 1.0, 0.16)
+	_plate_tween.tween_property(name_plate, "modulate:a", 1.0, 0.16)
 
 
-## 震惊演出：整个画面抖一下 + 对话框再抖一下，幅度递减收束
+## 震惊演出：整个画面抖一下 + 对话框左右抖一下，幅度递减收束
+## （对话框只抖 x：滑入动画只动 y，两者并行不冲突）
 var _shake_tween: Tween
 
 func _shake_on_shock() -> void:
+	if skip_mode:
+		return
 	if _shake_tween != null and _shake_tween.is_valid():
 		_shake_tween.kill()
 	self.position = Vector2.ZERO
 	_shake_tween = create_tween()
 	for off: Vector2 in [Vector2(16, 10), Vector2(-13, 7), Vector2(9, -6), Vector2(-5, 3), Vector2(2, -1), Vector2.ZERO]:
 		_shake_tween.tween_property(self, "position", off, 0.045)
-	if _vn_tween != null and _vn_tween.is_valid():
-		_vn_tween.kill()
-	var base := vnbox.position
-	vnbox.position = base + Vector2(-12, 0)
-	var tw2: Tween = create_tween()
-	for off: Vector2 in [Vector2(10, 0), Vector2(-7, 0), Vector2(4, 0), Vector2.ZERO]:
-		tw2.tween_property(vnbox, "position", base + off, 0.05)
+	if _vn_shake_tween != null and _vn_shake_tween.is_valid():
+		_vn_shake_tween.kill()
+	vnbox.position.x = _plate_base_x - 12.0
+	_vn_shake_tween = create_tween()
+	for off: float in [10.0, -7.0, 4.0, 0.0]:
+		_vn_shake_tween.tween_property(vnbox, "position:x", _plate_base_x + off, 0.05)
 
 
 func _apply_bg(value: String) -> void:
