@@ -133,9 +133,14 @@ GDScript 写的章节播放器：剧本解析、分支跳转、9 个存档位 + 
 
 ## 下载
 
-最新版本 **v1.4.2**，APK 在 [Releases](../../releases) 页面。
+最新版本 **v1.4.2**，两个平台都在 [Releases](../../releases) 页面：
 
-> 安装包为 debug 签名，安装时需允许「未知来源」。包名 `com.universeexpress.galgame`，arm64-v8a，185MB。
+| 平台 | 文件 | 大小 | 说明 |
+|---|---|---|---|
+| Windows | `Universe-Express-v1.4.2-win64.exe` | 264 MB | 单文件，双击即玩，不需要安装。未做代码签名，SmartScreen 可能拦一下：点「更多信息」→「仍要运行」 |
+| Android | `Universe-Express-v1.4.2-debug.apk` | 185 MB | arm64-v8a，debug 签名，安装时需允许「未知来源」。包名 `com.universeexpress.galgame` |
+
+Windows 版窗口 1920×1080，可以自由拉伸，画面按 canvas_items 等比适配。
 
 ## 玩法
 
